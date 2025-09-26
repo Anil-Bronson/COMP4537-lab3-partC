@@ -10,7 +10,7 @@ http.createServer((req, res) => {
     const filename = "file.txt";
     const text = q.text || "Error reading text";
 
-    if(parsedUrl.path.includes("/writeFile")){
+    if(parsedUrl.pathname.startsWith("/writeFile")){
         fs.access(filename, fs.constants.F_OK, (err) => {
             if (err){
                 fs.writeFile(filename, text, (err) => {
@@ -36,12 +36,12 @@ http.createServer((req, res) => {
             }
         });
     }
-    else if(parsedUrl.path.includes("/readFile")){
+    else if(parsedUrl.pathname.startsWith("/readFile")){
         fs.readFile(filename, 'utf8', (err, data) => {
             if (err) {
                 res.writeHead(404, {"Content-Type" : 'text-html'});
             } else {
-                res.writeHead(200, { "Content-Type": "text/html" });
+                res.writeHead(200, { "Content-Type": "text-html" });
                 res.end(`<p>${data}</p>`)
             }
         })
@@ -50,13 +50,3 @@ http.createServer((req, res) => {
     
 }).listen(PORT);
 
-
-    // fs.readFile(filename, (err, data) => {
-    //     if (err) {
-    //         res.writeHead(404, {"Content-Type" : 'text-html'});
-    //         return res.end(q.pathname + "   404 Not Found!");
-    //     }
-    //     res.writeHead(200, {"Content-Type" : 'text-html'});
-    //     res.write(data);
-    //     return res.end()
-    // });
