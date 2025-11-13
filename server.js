@@ -10,9 +10,10 @@ http.createServer((req, res) => {
     const filename = "file.txt";
     const text = q.text || "Error reading text";
 
-    if(parsedUrl.pathname.startsWith("/writeFile")){
+    if (parsedUrl.pathname.startsWith("/writeFile")) {
         fs.access(filename, fs.constants.F_OK, (err) => {
-            if (err){
+            if (err) {
+                // File doesn't exist — create it
                 fs.writeFile(filename, text, (err) => {
                     if (err) {
                         res.writeHead(500, { "Content-Type": "text/html" });
@@ -22,8 +23,8 @@ http.createServer((req, res) => {
                         res.end("<p>Successfully created file and added text!</p>");
                     }
                 });
-                res.end();
             } else {
+                // File exists — append text
                 fs.appendFile(filename, "\n" + text, (err) => {
                     if (err) {
                         res.writeHead(500, { "Content-Type": "text/html" });
@@ -36,10 +37,11 @@ http.createServer((req, res) => {
             }
         });
     }
-    else if(parsedUrl.pathname.startsWith("/readFile")){
+
+    else if (parsedUrl.pathname.startsWith("/readFile")) {
         fs.readFile(filename, 'utf8', (err, data) => {
             if (err) {
-                res.writeHead(404, {"Content-Type" : 'text-html'});
+                res.writeHead(404, { "Content-Type": 'text-html' });
             } else {
                 res.writeHead(200, { "Content-Type": "text-html" });
                 res.end(`<p>${data}</p>`)
@@ -47,6 +49,6 @@ http.createServer((req, res) => {
         })
     }
 
-    
+
 }).listen(PORT);
 
